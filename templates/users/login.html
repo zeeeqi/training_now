@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Inicio de Sesion | Training Now{% endblock title %}
+
+{% block content %}
+<div id="app">
+    <h1>
+        {% if request.user.full_name %}
+        {{ request.user.full_name }}
+        {% else %}
+        {{ request.user }}
+        {% endif %}
+    </h1>
+    <form method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Acceder</button>
+    </form>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+    var app = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        data: {
+            message: 'Hello Vue!'
+        }
+    })
+</script>
+{% endblock extra_js %}
