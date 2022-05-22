@@ -10,7 +10,8 @@ class UserRegisterForm(forms.ModelForm):
         required=True,
         widget=forms.PasswordInput(
             attrs={
-                'placeholder': 'Contraseña'
+                'placeholder': 'Contraseña',
+                'class': 'form-control'
             }
         )
     )
@@ -19,7 +20,8 @@ class UserRegisterForm(forms.ModelForm):
         required=True,
         widget=forms.PasswordInput(
             attrs={
-                'placeholder': 'Repetir Contraseña'
+                'placeholder': 'Repetir Contraseña',
+                'class': 'form-control'
             }
         )
     )
@@ -34,10 +36,41 @@ class UserRegisterForm(forms.ModelForm):
             'last_name',
             'gender',
         )
+        widgets = {
+            'email': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Correo electrónico'
+                }
+            ),
+            'first_name': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder': 'Nombre'
+                }
+            ),
+            'last_name': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder': 'Apellidos'
+                }
+            ),
+            'gender': forms.Select(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+        }
+        
+    def clean(self):
+        user = User.objects.filter(email=self.cleaned_data['email']).count()
+        if user:
+            raise forms.ValidationError('El correo electrónico ya está registrado')
     
     def clean_password2(self):
         if self.cleaned_data['password1'] != self.cleaned_data['password2']:
             self.add_error('password2', 'Las contraseñas no son iguales')
+        
 
 
 class LoginForm(forms.Form):
@@ -47,6 +80,8 @@ class LoginForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Email',
+                'class': 'form-control form-control-lg',
+                'id': 'form2Example17'
             }
         )
     )
@@ -56,10 +91,22 @@ class LoginForm(forms.Form):
         widget=forms.PasswordInput(
             attrs={
                 'placeholder': 'Contraseña',
-                'class': 'form-control'
+                'class': 'form-control form-control-lg',
+                'id': 'form2Example27'
             }
         )
     )
+    
+    remember_me = forms.BooleanField(
+        label='Recordarme',
+        required=False,
+        initial=True,
+        widget=forms.CheckboxInput(
+            attrs={
+                'class': 'form-check-input',
+            }
+        )
+        );
 
     def clean(self):
         self.cleaned_data = super(LoginForm, self).clean()
@@ -67,7 +114,7 @@ class LoginForm(forms.Form):
         password = self.cleaned_data['password']
 
         if not authenticate(email=email, password=password):
-            raise forms.ValidationError('Los datos de usuario no son correctos')
+            raise forms.ValidationError('Email o contraseña incorrectos')
         
         return self.cleaned_data
 

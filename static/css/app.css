@@ -1,3 +1,12 @@
+@font-face {
+    font-family: Nunito;
+    src : url('../fonts/Nunito-Regular.ttf');
+}
+
+* {
+    font-family: Nunito;
+}
+
 .navbar-brand img {
     height: 75px;
     width: 75px;

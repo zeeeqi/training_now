@@ -1,4 +1,5 @@
 from django.core.exceptions import ImproperlyConfigured
+from django.urls import reverse_lazy
 import json
 
 
@@ -110,3 +111,7 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+LOGIN_URL = reverse_lazy('users_app:user-login')
+LOGOUT_URL = reverse_lazy('users_app:user-logout')
+LOGIN_REDIRECT_URL = reverse_lazy('users_app:index')

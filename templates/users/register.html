@@ -1,15 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Registar nuevo usuario</h1>
-    <form method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Registrar</button>
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div id="app">
+    <div class="container py-2 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col col-xl-10">
+                <div class="card" style="border-radius: 1rem;">
+                    <div class="row g-0">
+                        <div class="col-md-6 col-lg-5 d-none d-md-block">
+                            
+                            <img src="{% static 'img/login.jpg' %}"
+                                alt="Login Form" class="img-fluid w-100 h-100" style="border-radius: 1rem 0 0 1rem;" />
+                        </div>
+                        <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                            <div class="card-body p-4 p-lg-5 text-black">
+
+                                <form method="POST">{% csrf_token %}
+                                
+                                    <div class="d-flex align-items-center justify-content-center mb-3 pb-1">
+                                        <i class="fa-solid fa-dumbbell fa-2x me-3"></i>
+                                        <span class="h1 fw-bold mb-0">Training Now</span>
+                                        <i class="fa-solid fa-dumbbell fa-2x ms-3"></i>
+                                    </div>
+
+                                    <h5 class="fw-normal pb-2" style="letter-spacing: 1px;">Registro</h5>
+
+                                    <div class="form-outline">
+                                        {{ form.email }}
+                                        <label class="form-label" for="{{ form.email.id_for_label }}">Correo Electrónico</label>
+                                    </div>
+
+                                    <div class="form-outline">
+                                        {{ form.password1 }}
+                                        <label class="form-label" for="{{ form.password1.id_for_label }}">Contraseña</label>
+                                    </div>
+                                    <div class="form-outline">
+                                        {{ form.password2 }}
+                                        <label class="form-label" for="{{ form.password2.id_for_label }}">Contraseña</label>
+                                    </div>
+                                    <div class="form-outline">
+                                        {{ form.first_name }}
+                                        <label class="form-label" for="{{ form.first_name.id_for_label }}">Nombre</label>
+                                    </div>
+                                    <div class="form-outline">
+                                        {{ form.last_name }}
+                                        <label class="form-label" for="{{ form.last_name.id_for_label }}">Apellidos</label>
+                                    </div>
+                                    <div class="form-outline">
+                                        {{ form.gender }}
+                                        <label class="form-label" for="{{ form.gender.id_for_label }}">Género</label>
+                                    </div>
+                                    {{ form.non_field_errors }}
+                                    <div class="pt-1 mb-1">
+                                        <button class="btn btn-primary btn-lg btn-block" type="submit">Registrar</button>
+                                    </div>
+                                    {{ form.subject.errors }}
+                                    <div class="d-flex justify-content-end">
+                                        <a href="#!" class="small text-muted me-3">Términos de uso</a>
+                                        <a href="#!" class="small text-muted">Políticas de privacidad</a>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
