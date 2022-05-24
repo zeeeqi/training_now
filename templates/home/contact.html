@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Wrapper container -->
+<div class="container py-4">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="h1"> Formulario de contacto</h1>
+    </div>
+    <div class="col-12 col-lg-8">
+      <form id="contactForm" method="POST">{% csrf_token %}
+
+        {% for field in form %}
+        <div class="form-floating mb-3">
+          {{ field }}
+          <label class="form-label" for="{{ form.name.id_for_label }}">{{ field.label }}</label>
+          {% for error in field.errors %}
+          <span class="form-text ms-2 text-danger">* {{ error }}</span>
+          {% endfor %}
+        </div>
+        {% endfor %}
+
+        {{ form.non_field_errors }}
+        
+        <div class="d-grid">
+          <button class="btn btn-primary btn-lg" type="submit">Contactar</button>
+        </div>
+
+      </form>
+    </div>
+    <div class="d-none col-0 col-lg-4 d-lg-block">
+      <p>HOLA</p>
+      <p>HOLA</p>
+      <p>HOLA</p>
+      <p>HOLA</p>
+    </div>
+  </div>
+</div>
+{% endblock content %}

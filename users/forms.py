@@ -1,7 +1,11 @@
 from django import forms
 from django.contrib.auth import authenticate
+from django.core import validators
+from django.contrib.auth.password_validation import validate_password
 #
 from .models import User
+
+import re
 
 class UserRegisterForm(forms.ModelForm):
 
@@ -13,18 +17,26 @@ class UserRegisterForm(forms.ModelForm):
                 'placeholder': 'Contraseña',
                 'class': 'form-control'
             }
-        )
+        ),
+        validators=[
+            validate_password
+        ]
     )
     password2 = forms.CharField(
-        label='Contraseña',
+        label='Repetir Contraseña',
         required=True,
         widget=forms.PasswordInput(
             attrs={
                 'placeholder': 'Repetir Contraseña',
                 'class': 'form-control'
             }
-        )
+        ),
+        validators=[
+            validate_password
+        ]
     )
+    
+    field_order = ['email', 'password1', 'password2', 'first_name', 'last_name', 'gender']
 
     class Meta:
         """Meta definition for Userform."""
@@ -57,7 +69,7 @@ class UserRegisterForm(forms.ModelForm):
             ),
             'gender': forms.Select(
                 attrs={
-                    'class': 'form-control'
+                    'class': 'form-select'
                 }
             ),
         }
@@ -162,3 +174,71 @@ class VerificationForm(forms.Form):
                 raise forms.ValidationError('el codigo es incorrecto')
         else:
             raise forms.ValidationError('el codigo es incorrecto')
+        
+
+class ContactForm(forms.Form):
+    name = forms.CharField(
+        label='Nombre',
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'Nombre',
+                'class': 'form-control'
+            }
+        )
+    )
+    email = forms.EmailField(
+        label='Email',
+        required=True,
+        widget=forms.EmailInput(
+            attrs={
+                'placeholder': 'Correo electrónico',
+                'class': 'form-control',
+            }
+        )
+    )
+    subject = forms.CharField(
+        label='Asunto',
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'Asunto',
+                'class': 'form-control'
+            }
+        )
+    )
+    message = forms.CharField(
+        label='Mensaje',
+        required=True,
+        widget=forms.Textarea(
+            attrs={
+                'placeholder': 'Mensaje',
+                'class': 'form-control',
+                'rows': '50'
+            }
+        )
+    )
+    
+    def clean_name(self):
+        if len(self.cleaned_data['name']) < 5:
+            self.add_error('name', 'El nombre debe tener al menos 5 caracteres')
+    
+    def clean_email(self):
+        valid_email = re.match(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$', self.cleaned_data['email'])
+        if not valid_email:
+            self.add_error('email', 'El email no es valido')
+    
+    def clean_subject(self):
+        if len(self.cleaned_data['subject']) < 5:
+            self.add_error('subject', 'El asunto debe tener al menos 5 caracteres')
+        
+    def clean_message(self):
+        if len(self.cleaned_data['message']) < 10:
+            self.add_error('message', 'El mensaje debe tener al menos 10 caracteres')
+        elif len(self.cleaned_data['message']) > 500:
+            self.add_error('message', 'El mensaje no puede tener mas de 500 caracteres')
+    
+    def clean(self):
+        self.cleaned_data = super(ContactForm, self).clean()
+        
+        return self.cleaned_data

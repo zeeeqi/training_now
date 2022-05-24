@@ -1,12 +1,11 @@
-from django.shortcuts import render
-from django.core.mail import send_mail
+
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.shortcuts import redirect
-from django import forms
+
 
 from django.views.generic import (
     View,
@@ -21,6 +20,7 @@ from .forms import (
     UserRegisterForm, 
     LoginForm,
     UpdatePasswordForm,
+    ContactForm
 )
 #
 from .models import User
@@ -99,3 +99,11 @@ class UpdatePasswordView(LoginRequiredMixin, FormView):
 
 class IndexView(LoginRequiredMixin, TemplateView):
     template_name = 'home/index.html'
+    
+class ContactFormView(FormView):
+    template_name = 'home/contact.html'
+    form_class = ContactForm
+    success_url = '/'
+    
+    def form_valid(self, form):
+        return super(ContactFormView, self).form_valid(form)
