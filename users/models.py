@@ -1,10 +1,9 @@
+import random
+
 from django.db import models
-
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractUser
 #
-from .managers import UserManager
-
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractUser):
 
     GENDER_CHOICES = (
         ('M', 'Masculino'),
@@ -16,18 +15,21 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField('Nombre', max_length=30, blank=True)
     last_name = models.CharField('Apellidos', max_length=50, blank=True)
     gender = models.CharField('Género', max_length=1, choices=GENDER_CHOICES, blank=True)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     
-    REQUIRED_FIELDS = []
-
-    objects = UserManager()
+    REQUIRED_FIELDS = ['username']
     
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
+
+    def __str__(self):
+        return f'{self.full_name} - {self.email}'
+    
+    def save(self, **kwargs):
+        self.username = f'{self.email.rsplit("@", 1)[0]}_{random.randint(1, 100)}'
+        super().save(**kwargs)
 
     def get_name(self):
         return self.first_name

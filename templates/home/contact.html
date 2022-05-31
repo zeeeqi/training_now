@@ -1,11 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+  <style>
+    #{{form.message.id_for_label}}{
+      height: 100px;
+    }
+  </style>
+{% endblock extra_css %}
+{% block title %}Contacto | Training Now{% endblock title %}
 {% block content %}
 <!-- Wrapper container -->
-<div class="container py-4">
+<div class="container py-4 shadow rounded p-5">
   <div class="row">
-    <div class="col-12">
+    <div class="col-12 mb-3">
       <h1 class="h1"> Formulario de contacto</h1>
     </div>
     <div class="col-12 col-lg-8">
@@ -14,7 +22,7 @@
         {% for field in form %}
         <div class="form-floating mb-3">
           {{ field }}
-          <label class="form-label" for="{{ form.name.id_for_label }}">{{ field.label }}</label>
+          <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
           {% for error in field.errors %}
           <span class="form-text ms-2 text-danger">* {{ error }}</span>
           {% endfor %}
@@ -29,11 +37,23 @@
 
       </form>
     </div>
-    <div class="d-none col-0 col-lg-4 d-lg-block">
-      <p>HOLA</p>
-      <p>HOLA</p>
-      <p>HOLA</p>
-      <p>HOLA</p>
+    <div class="d-none d-lg-block col-lg-4 text-center">
+      <ul class="list-unstyled mb-0 pt-4">
+          <li><i class="fas fa-map-marker-alt fa-2x"></i>
+              <p>Cristobal Colón 10, Utrera</p>
+          </li>
+
+          <li><i class="fas fa-phone mt-4 fa-2x"></i>
+              <p>627 86 45 43</p>
+          </li>
+
+          <li><i class="fas fa-envelope mt-4 fa-2x"></i>
+              <p>trainingnow@gmail.com</p>
+          </li>
+      </ul>
+  </div>
+    <div class="d-none col-lg-4 d-lg-block text-center">
+      
     </div>
   </div>
 </div>

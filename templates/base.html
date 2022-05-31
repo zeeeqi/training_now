@@ -6,7 +6,9 @@
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="{% static 'img/favicon.ico' %}">
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/toastr.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <title>{% block title %}Training Now{% endblock title %}</title>
@@ -15,10 +17,10 @@
 
 <body>
   {% block header %}
-  <nav class="navbar navbar-expand-lg py-3">
+  <nav class="navbar navbar-expand-md">
     <div class="container-fluid d-flex" style="max-width: 1100px;">
       <a class="navbar-brand" href="{% url 'users_app:index' %}">
-        <img class="img-fluid w-100 h-100" src="{% static 'img/logo.png' %}" alt="Brand Logo" width="30" height="24">
+        <img class="img-fluid w-100" src="{% static 'img/logo.png' %}" alt="Brand Logo" style="height: 100px;">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
         aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,7 +28,9 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav ms-auto">
-          <a class="btn btn-outline-primary mx-4 my-lg-auto my-1 my-lg-auto my-1" aria-current="page" href="#">Reservas</a>
+          {% if request.user.is_authenticated %}
+          <a class="btn btn-outline-primary mx-4 my-lg-auto my-1 my-lg-auto my-1" aria-current="page" href="{% url 'bookings_app:bookings' %}">Reservas</a>
+          {% endif %}
           <a class="btn btn-outline-primary mx-4 my-lg-auto my-1" href="{% url 'users_app:contact' %}">Contacto</a>
           {% if request.user.is_staff %}
             <a class="btn btn-outline-primary mx-4 my-lg-auto my-1" href="{% url 'users_app:user-register' %}">Registrar</a>
@@ -46,41 +50,34 @@
   {% endblock content %}
 
   {% block footer %}
-<!-- Footer -->
 <footer class="text-center text-lg-start bg-light text-muted mt-5">
-  <!-- Section: Social media -->
   <section
     class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom"
   >
-    <!-- Left -->
+
     <div class="me-5 d-none d-lg-block">
-      <span>Puedes encontrarme en las siguientes redes sociales:</span>
+      <span>Nos encontrarás en las siguientes redes sociales:</span>
     </div>
-    <!-- Left -->
 
-    <!-- Right -->
     <div>
-      <a href="" class="me-4 text-reset">
-        <i class="fa-brands fa-facebook-f"></i>
+      <a href="" class="me-4 text-reset text-decoration-none">
+        <i class="fa-brands fa-facebook-f fa-2x"></i>
       </a>
-      <a href="" class="me-4 text-reset">
-        <i class="fab fa-twitter"></i>
+      <a href="" class="me-4 text-reset text-decoration-none">
+        <i class="fab fa-twitter fa-2x"></i>
       </a>
-      <a href="" class="me-4 text-reset">
-        <i class="fab fa-google"></i>
+      <a href="" class="me-4 text-reset text-decoration-none">
+        <i class="fab fa-google fa-2x"></i>
       </a>
-      <a href="" class="me-4 text-reset">
-        <i class="fab fa-instagram"></i>
+      <a href="" class="me-4 text-reset text-decoration-none">
+        <i class="fab fa-instagram fa-2x"></i>
       </a>
-      <a href="" class="me-4 text-reset">
-        <i class="fab fa-linkedin"></i>
+      <a href="" class="me-4 text-reset text-decoration-none">
+        <i class="fab fa-linkedin fa-2x"></i>
       </a>
     </div>
-    <!-- Right -->
   </section>
-  <!-- Section: Social media -->
 
-  <!-- Section: Links  -->
   <section class="">
     <div class="container text-center text-md-start mt-5">
       <!-- Grid row -->
@@ -91,17 +88,12 @@
           <h6 class="text-uppercase fw-bold mb-4">
             <i class="fa-solid fa-dumbbell me-3"></i>Training Now
           </h6>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            Eligendi tempore rerum vitae esse quos fugiat nemo dolores reiciendis maiores corrupti,
-            id harum pariatur totam molestias laborum odio quae quia. Sunt?
+          <p class="" style="text-align: justify;">
+            Los resultados pueden variar según cada persona. El ejercicio y una dieta saludable son necesarios para lograr y mantener la pérdida de peso, el mantenimiento y la tonificación del músculo.
           </p>
         </div>
-        <!-- Grid column -->
 
-        <!-- Grid column -->
         <div class="col-md-5 col-lg-4 col-xl-4 mx-auto mb-4">
-          <!-- Links -->
           <h6 class="text-uppercase fw-bold mb-4">
             Links de interés
           </h6>
@@ -118,11 +110,7 @@
             <a href="#!" class="text-reset">Help</a>
           </p>
         </div>
-        <!-- Grid column -->
-
-        <!-- Grid column -->
         <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-          <!-- Links -->
           <h6 class="text-uppercase fw-bold mb-4">
             Contacto
           </h6>
@@ -133,25 +121,21 @@
           </p>
           <p><i class="fas fa-phone me-3"></i>627 86 45 43</p>
         </div>
-        <!-- Grid column -->
       </div>
-      <!-- Grid row -->
     </div>
   </section>
-  <!-- Section: Links  -->
 
-  <!-- Copyright -->
   <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
     
     © 2022 Copyright
   </div>
-  <!-- Copyright -->
 </footer>
-<!-- Footer -->
-  {% endblock footer %}
+{% endblock footer %}
 
 </body>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="{% static 'js/jquery.js' %}"></script>
+<script src="{% static 'js/toastr.min.js' %}"></script>
 <script src="{% static 'js/vue.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
 <script src="{% static 'js/app.js' %}"></script>

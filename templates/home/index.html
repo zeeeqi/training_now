@@ -1,8 +1,73 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Training Now{% endblock title %}
+{% block extra_css %}
+<style>
+    .carousel-item img {
+        width: 100%;
+        height: calc(100vh - 126px);
+        object-fit: cover;
+    }
+</style>
+{% endblock extra_css %}
 {% block content %}
-<div>
-    
+<div id="carousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carousel" data-bs-slide-to="0" class="active" aria-current="true"
+            aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="{% static 'img/carousel1.jpg' %}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+            <img src="{% static 'img/carousel2.jpg' %}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+            <img src="{% static 'img/carousel3.jpg' %}" class="d-block w-100" alt="...">
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <h1 class="display-4 text-center">¿Qué es Training Now?</h1>
+            <p class="h5 text-center mt-3"><span class="fw-bold">Training Now</span> es un centro de entrenamiento personal en el que encontrarás las siguientes ventajas</p>
+        </div>
+        <div class="row">
+            <div class="col-12 col-lg-5 offset-lg-1">
+                <div class="card w-100">
+                    <img src="{% static 'img/buen-ambiente.jpg' %}" class="card-img-top" alt="Gente riendo" style="max-height: 500px;object-fit:cover;object-position:top">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Grupos Reducidos</h5>
+                        <p class="card-text">
+                            El entrenamiento en grupos reducidos es ideal para personas que quieran mejorar su estado de salud a través de la práctica de actividad física de forma dinámica y divertida, mejorando sus cualidades físicas y habilidades motrices, sin olvidar el componente social y la motivación. 
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-5 offset-lg-1 mt-3 mt-lg-0">
+                <div class="card w-100">
+                    <img src="{% static 'img/entrenamiento-adaptado.jpg' %}" class="card-img-top" alt="Gente riendo" style="max-height: 500px;object-fit:cover;object-position:50% 30%">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Entrenamiento adaptado</h5>
+                        <p class="card-text">
+                            Adaptamos el entrenamiento según las necesidades de cada persona, teniendo en cuenta lesiones, dificultades y necesidades especiales.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock content %}

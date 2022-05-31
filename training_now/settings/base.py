@@ -30,6 +30,7 @@ SECRET_KEY = get_secret('SECRET_KEY')
 # Application definition
 
 DJANGO_APPS = (
+    'admin_volt.apps.AdminVoltConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +44,10 @@ LOCAL_APPS = (
     'bookings',
 )
 
-THIRD_PARTY_APPS = ()
+THIRD_PARTY_APPS = (
+    'rest_framework',
+    
+)
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
@@ -76,6 +80,10 @@ TEMPLATES = [
         },
     },
 ]
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+        'django.core.context_processors.request',
+    )
 
 WSGI_APPLICATION = 'training_now.wsgi.application'
 
@@ -112,6 +120,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+CSRF_COOKIE_NAME = "csrftoken"
 
 LOGIN_URL = reverse_lazy('users_app:user-login')
 LOGOUT_URL = reverse_lazy('users_app:user-logout')
