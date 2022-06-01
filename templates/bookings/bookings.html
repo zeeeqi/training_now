@@ -42,84 +42,89 @@
           </div>
         </div>
       </div>
-      
-      <h1 class="h2 text-center">Semana del [[first_day | mmddyyyy]] al [[ last_day | mmddyyyy]]</h1>
-      <div class="accordion accordion-flush" id="accordion">
-        <div class="accordion-item" v-for="(hours, day, index) in available_bookings">
-          <h2 class="accordion-header" :id="[[day]]">
-            <button class="accordion-button collapsed mx-auto" type="button" data-bs-toggle="collapse"
-              :data-bs-target="`#collapse-${day}`" aria-expanded="false" aria-controls="`collapse-${day}`">
-              [[hours[0].start | fullDate | upperFirst]]
-            </button>
-          </h2>
-          <div :id="`collapse-${day}`" class="accordion-collapse collapse" :aria-labelledby="[[day]]"
-            data-bs-parent="#accordion" :class="{'show': index === 0 }">
-            <div class="accordion-body">
-              <div class="row">
-                <div v-for="hour in hours" class="card col-md-2 col-4 p-0 rounded-0 ">
-                  <div class="card-header text-center">
-                    [[ hour.start | slicedDate | toString]] -
-                    [[ hour.start | slicedDate | addOneHour | toString]]
+      <template v-if="have_bookings()">
+        <h1 class="h2 text-center">Semana del [[first_day | mmddyyyy]] al [[ last_day | mmddyyyy]]</h1>
+        <div class="accordion accordion-flush" id="accordion">
+          <div class="accordion-item" v-for="(hours, day, index) in available_bookings">
+            <h2 class="accordion-header" :id="[[day]]">
+              <button class="accordion-button collapsed mx-auto" type="button" data-bs-toggle="collapse"
+                :data-bs-target="`#collapse-${day}`" aria-expanded="false" aria-controls="`collapse-${day}`">
+                [[hours[0].start | fullDate | upperFirst]]
+              </button>
+            </h2>
+            <div :id="`collapse-${day}`" class="accordion-collapse collapse" :aria-labelledby="[[day]]"
+              data-bs-parent="#accordion" :class="{'show': index === 0 }">
+              <div class="accordion-body">
+                <div class="row">
+                  <div v-for="hour in hours" class="card col-4 col-md-3 col-xl-2 p-0 rounded-0 ">
+                    <div class="card-header text-center">
+                      [[ hour.start | slicedDate | toString]] -
+                      [[ hour.start | slicedDate | addOneHour | toString]]
+                    </div>
+                    <a v-if="user_in_class(hour.users)" href="#" class="text-decoration-none" @click.prevent="set_class(hour)"
+                    data-bs-toggle="modal" data-bs-target="#cancelacion-reserva">
+                      <div class="card-body h-100 d-flex justify-content-center">
+                        <template v-for="user in hour.users">
+                          <i v-if="current_user.id === user.id" class="fa-solid fa-user fa-2x text-success mx-lg-1"></i>
+                          <i v-else class="fa-solid fa-user fa-2x mx-lg-1 text-danger"></i>
+                        </template>
+                        <i v-for="index in hour.max_people - hour.users.length"
+                          class="fa-solid fa-user-plus fa-2x mx-lg-1"></i>
+                      </div>
+                    </a>
+                    <a v-else href="#" class="text-decoration-none" @click.prevent="set_class(hour)" data-bs-toggle="modal"
+                      data-bs-target="#confirmacion-reserva">
+                      <div class="card-body h-100 d-flex justify-content-center">
+                        <template v-for="user in hour.users">
+                          <i v-if="current_user.id === user.id" class="fa-solid fa-user fa-2x text-success mx-lg-1"></i>
+                          <i v-else class="fa-solid fa-user fa-2x mx-lg-1 text-danger"></i>
+                        </template>
+                        <i v-for="index in hour.max_people - hour.users.length"
+                          class="fa-solid fa-user-plus fa-2x mx-lg-1"></i>
+                      </div>
+                    </a>
                   </div>
-                  <a v-if="user_in_class(hour.users)" href="#" class="text-decoration-none" @click.prevent="set_class(hour)"
-                  data-bs-toggle="modal" data-bs-target="#cancelacion-reserva">
-                    <div class="card-body h-100 d-flex justify-content-center">
-                      <template v-for="user in hour.users">
-                        <i v-if="current_user.id === user.id" class="fa-solid fa-user fa-2x text-success mx-lg-1"></i>
-                        <i v-else class="fa-solid fa-user fa-2x mx-lg-1 text-danger"></i>
-                      </template>
-                      <i v-for="index in hour.max_people - hour.users.length"
-                        class="fa-solid fa-user-plus fa-2x mx-lg-1"></i>
-                    </div>
-                  </a>
-                  <a v-else href="#" class="text-decoration-none" @click.prevent="set_class(hour)" data-bs-toggle="modal"
-                    data-bs-target="#confirmacion-reserva">
-                    <div class="card-body h-100 d-flex justify-content-center">
-                      <template v-for="user in hour.users">
-                        <i v-if="current_user.id === user.id" class="fa-solid fa-user fa-2x text-success mx-lg-1"></i>
-                        <i v-else class="fa-solid fa-user fa-2x mx-lg-1 text-danger"></i>
-                      </template>
-                      <i v-for="index in hour.max_people - hour.users.length"
-                        class="fa-solid fa-user-plus fa-2x mx-lg-1"></i>
-                    </div>
-                  </a>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="row mt-2">
-        <div class="col-6">
-          <div class="d-flex">
-            <i class="fa-solid fa-user text-success mb-2 me-2"></i> <span> = Reserva propia</span>
+        <div class="row mt-3">
+          <div class="col-6">
+            <div class="btn-group">
+              <button type="button" class="btn btn-primary"
+              :class="{ disabled: new Date().getDate() == this.week.getDate() }"
+              @click="set_current_week">Actual</button>
+              <button type="button" class="btn btn-primary"
+              :class="{ disabled: new Date().getDate() != this.week.getDate() }"
+              @click="set_next_week_date">Siguiente</button>
+            </div>
           </div>
-          <div class="d-flex">
-            <i class="fa-solid fa-user-plus text-primary mb-2 me-2"></i> = Reserva disponible
-          </div>
-          <div class="d-flex">
-            <i class="fa-solid fa-user text-danger me-2"></i> = Reserva ocupada
+          <div class="col-6 d-flex justify-content-end">
+            <div class="d-flex flex-column">
+              <div class="d-flex">
+                <i class="fa-solid fa-user text-success mb-2 me-2"></i> <span>&nbsp; = Reserva propia</span>
+              </div>
+              <div class="d-flex">
+                <i class="fa-solid fa-user-plus text-primary mb-2 me-2"></i> = Reserva disponible
+              </div>
+              <div class="d-flex">
+                <i class="fa-solid fa-user text-danger me-2"></i>&nbsp; = Reserva ocupada
+              </div>
+            </div>
           </div>
         </div>
-        <div class="col-6">
-          <div class="btn-group">
-            <button type="button" class="btn btn-primary"
-            :class="{ disabled: new Date().getDate() == this.week.getDate() }"
-            @click="set_current_week">Actual</button>
-            <button type="button" class="btn btn-primary"
-            :class="{ disabled: new Date().getDate() != this.week.getDate() }"
-            @click="set_next_week_date">Siguiente</button>
-          </div>
+      </template>
+      <div v-else class="d-flex justify-content-center align-items-center" style="height: 500px;">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">Loading...</span>
         </div>
+        <div class="text-primary ms-3">Cargando...</div>
       </div>
     </div>
     
 {% endblock content %}
 
 {% block extra_js %}
-<script>
-  axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-  axios.defaults.xsrfCookieName = "csrftoken";
-</script>
   <script src="{% static 'js/bookings/bookings.js' %}"></script>
 {% endblock extra_js %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Mis Reservas | Training Now{% endblock title %}
+
+{% block content %}
+<div class="container mt-3">
+    
+    {% if bookings %}
+    <h1 class="h1 mb-4">Tus próximas reservas</h1>
+        
+    <ul class="list-group">
+        {% for booking in bookings %}
+        <li class="list-group-item">{{ booking.start }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <div class="row">
+            <div class="col-12">
+                <h1 class="h1 mb-3 text-center">¡Vaya! Todavía no tienes ninguna reserva...</h1>
+            </div>
+            <div class="col-12 col-md-10 col-lg-6 offset-md-1 offset-lg-3 mb-2 mb-lg-4">
+                <img class="img-fluid" src="{% static 'img/mistake.jpg' %}" alt="">
+            </div>
+            <div class="col-12">
+                <p class="text-center h4">Puedes hacer tu primera reserva <a href="{% url 'bookings_app:bookings' %}">aquí</a></p>
+            </div>
+        </div>
+
+    {% endif %}
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+    <script src="{% static 'js/bookings/my-bookings.js' %}"></script>
+{% endblock extra_js %}

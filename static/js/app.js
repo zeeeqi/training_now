@@ -1,6 +1,4 @@
 // toastr config
-
-
 toastr.options = {
     "closeButton": true,
     "debug": false,
@@ -18,3 +16,7 @@ toastr.options = {
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
   }
+
+// Axios config
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
