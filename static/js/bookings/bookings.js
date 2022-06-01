@@ -4,7 +4,7 @@ let app = new Vue({
     el: '#app',
     delimiters: ['[[',']]'],
     data:{
-        available_bookings: [],
+        available_bookings: {},
         current_class: '',
         current_user: '',
         week: new Date(),
@@ -23,8 +23,12 @@ let app = new Vue({
         }
     },
     methods: {
+        have_bookings(){
+            
+            return Object.keys(this.available_bookings).length
+        },
         get_current_user() {
-            axios.get('/api/bookings/current-user')
+            axios.get('/api/users/current-user')
                 .then(response => {
                     this.current_user = response.data
                 })

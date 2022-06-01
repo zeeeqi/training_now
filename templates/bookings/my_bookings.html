@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Mis Reservas | Training Now{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <h1 class="h1 mb-4">Próximas reservas</h1>
+ 
+    {% if bookings %}
+        
+    <ul class="list-group">
+        {% for booking in bookings %}
+        <li class="list-group-item">{{ booking.start }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        
+    {% endif %}
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+    <script src="{% static 'js/bookings/my-bookings.js' %}"></script>
+{% endblock extra_js %}

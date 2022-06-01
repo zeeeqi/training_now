@@ -10,7 +10,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         start_date = Booking.objects.all().order_by('-start').first()
         if not start_date:
-            start_date = datetime.now(timezone.utc) - timedelta(days=5)
+            start_date = datetime.now(timezone.utc)
         else:
             start_date = start_date.start
             
