@@ -42,10 +42,10 @@ class BookingViewSet(GenericViewSet):
         
         return Response(data=self.get_serializer_class()(qs, many=True).data)
     
-    @action(methods=['GET'], detail=True, url_path='my-bookings')
+    @action(methods=['GET'], detail=True, url_path='user-bookings')
     def get_bookings_by_user(self, request, pk):
         qs = self.get_queryset().filter(users=pk)
-        print(qs)
+       
         
         return Response(data=self.get_serializer_class()(qs, many=True).data)
         
@@ -55,7 +55,7 @@ class BookingViewSet(GenericViewSet):
         if booking:
             user = request.user
             if user.is_authenticated:
-                print(request.method)
+               
                 if request.method == 'POST':
                     start = booking.start.replace(hour=0, minute=0, second=0)
                     end = start.replace(hour=23, minute=59, second=59)
@@ -66,18 +66,16 @@ class BookingViewSet(GenericViewSet):
                         return Response(data={'message': 'Ya tienes una reserva para hoy'}, status=status.HTTP_400_BAD_REQUEST)
                     if booking.max_people == booking.users.count():
                         return Response(data={'message': 'La clase está llena'}, status=status.HTTP_400_BAD_REQUEST)
-                    # Uncomment to prevent users from booking the class when it's already started
-                    # if booking.start < datetime.now(timezone.utc):
-                    #     return Response(data={'message': 'La clase ya ha comenzado'}, status=status.HTTP_400_BAD_REQUEST)                    
+                    if booking.start < datetime.now():
+                        return Response(data={'message': 'La clase ya ha comenzado'}, status=status.HTTP_400_BAD_REQUEST)                    
                     if booking.allow_inscriptions:
                         booking.users.add(user)
                         return Response(data={'message': 'Clase reservada con éxito'}, status=status.HTTP_201_CREATED)
                     else:
                         return Response(data={'message': 'La clase no permite inscripciones'}, status=status.HTTP_400_BAD_REQUEST)
                 elif request.method == 'DELETE':
-                    # Uncomment to prevent canceling already started classes
-                    # if booking.start < timezone.now():
-                    #     return Response(data={'message': 'La clase ya ha comenzado'}, status=status.HTTP_400_BAD_REQUEST) 
+                    if booking.start < datetime.now():
+                        return Response(data={'message': 'La clase ya ha comenzado'}, status=status.HTTP_400_BAD_REQUEST) 
                     if booking.users.filter(id=user.id).exists():
                         booking.users.remove(user)
                         return Response(data={'message': 'Clase cancelada con éxito'}, status=status.HTTP_200_OK)

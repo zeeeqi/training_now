@@ -1,5 +1,4 @@
-
-
+import "./filters.js"
 let app = new Vue({
     el: '#app',
     delimiters: ['[[',']]'],
@@ -39,7 +38,7 @@ let app = new Vue({
         group_by_day(bookings) {
             const grouped = {}
             bookings.forEach((booking)=>{
-                const day = Date.parse(new Date(booking.start.slice(0,-1)).toDateString())
+                const day = Date.parse(new Date(booking.start).toDateString())
                 if(!grouped[day]){
                     grouped[day] = []
                 }
@@ -50,7 +49,7 @@ let app = new Vue({
         create_booking(booking_id){
             axios.post(`/api/bookings/${booking_id}/create-booking/`)
                 .then((response) => {
-                    this.get_week_bookings(new Date('2022-06-06'))
+                    this.get_week_bookings()
                     toastr["success"](response.data.message ,"Acción completada")
                 })
                 .catch((error) => {
@@ -61,7 +60,7 @@ let app = new Vue({
         delete_booking(booking_id){
             axios.delete(`/api/bookings/${booking_id}/create-booking/`)
                 .then((response) => {
-                    this.get_week_bookings(new Date('2022-06-06'))
+                    this.get_week_bookings()
                     toastr["success"](response.data.message ,"Acción completada")
                 })
                 .catch((error) => {
@@ -70,8 +69,8 @@ let app = new Vue({
                 })
         },
         get_week_bookings(){
-            this.first_day = this.first_day_of_week(this.week)
-            this.last_day = this.last_day_of_week(this.week)
+            this.first_day = this.first_day_of_week()
+            this.last_day = this.last_day_of_week()
         
             const params = {
                 start_date: `${this.first_day.getFullYear()}-${this.first_day.getMonth()+1}-${this.first_day.getDate()}`,
@@ -88,14 +87,20 @@ let app = new Vue({
         user_in_class(users){
             return users.find(user => user.id == this.current_user.id)
         },
-        first_day_of_week(date){
-            const first_day = new Date(date.getTime())
-            first_day.setDate(first_day.getDate() - first_day.getDay() + 1)
+        first_day_of_week(){
+            const first_day = new Date(this.week.getTime())
+            if (first_day.getDay() == 0) {
+                first_day.setDate(first_day.getDate() - 6)
+            } else {
+                first_day.setDate(first_day.getDate() - first_day.getDay() + 1)
+            }
             return first_day
         },
-        last_day_of_week(date){
-            const last_day = new Date(date.getTime())
-            last_day.setDate(last_day.getDate() + (7 - last_day.getDay()))
+        last_day_of_week(){
+            const last_day = new Date(this.week.getTime())
+            if (last_day.getDay() != 0) {
+                last_day.setDate(last_day.getDate() + (6 - last_day.getDay()))
+            }
             return last_day
         },
         set_next_week_date(){
@@ -103,51 +108,6 @@ let app = new Vue({
         },
         set_current_week(){
             this.week = new Date()
-        }
-    },
-    filters: {
-        fullDate: function(value) {
-            if (value) {
-                return new Date(value).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-            }
-        },
-        formatDate: function(value) {
-            if (value) {
-                const date = new Date(value);
-                return date.getHours();
-            }
-        },
-        toString: function(value){
-            if (value) {
-                return value.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-            }
-        },
-        addOneHour: function(value){
-            if (value) {
-                const date = new Date(value);
-                date.setHours(date.getHours() + 1);
-                return date
-            }
-        },
-        toDate: function(value){
-            if (value) {
-                return new Date(value)
-            }
-        },
-        upperFirst: function(value){
-            if (value) {
-                return value.charAt(0).toUpperCase() + value.slice(1)
-            }
-        },
-        slicedDate: function(value){
-            if (value) {
-                return new Date(value.slice(0,-1))
-            }
-        },
-        mmddyyyy: function(value){
-            if (value) {
-                return new Date(value).toLocaleDateString('es-ES', { month: '2-digit', day: '2-digit', year: 'numeric' })
-            }
         }
     }
 })

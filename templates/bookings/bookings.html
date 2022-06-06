@@ -6,14 +6,14 @@
     <div class="container" id="app">
       <!-- Modal confirmación reserva-->
       <div class="modal fade" id="confirmacion-reserva" tabindex="-1" aria-labelledby="confirmacion-reserva-label" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="confirmacion-reserva-label">Confirmar reserva</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              [[ current_class.start | fullDate | upperFirst ]] - [[ current_class.start | slicedDate | toString]]H
+              [[ current_class.start | toDate | fullDate | upperFirst ]] - [[ current_class.start | toDate | toString]]H
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
@@ -25,14 +25,14 @@
       </div>
       <!-- Modal cancelación reserva-->
       <div class="modal fade" id="cancelacion-reserva" tabindex="-1" aria-labelledby="cancelacion-reserva-label" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="cancelacion-reserva-label">Cancelar Reserva</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              [[ current_class.start | fullDate | upperFirst ]] - [[ current_class.start | slicedDate | toString]]H
+              [[ current_class.start | toDate | fullDate | upperFirst ]] - [[ current_class.start | toDate | toString]]H
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
@@ -49,7 +49,7 @@
             <h2 class="accordion-header" :id="[[day]]">
               <button class="accordion-button collapsed mx-auto" type="button" data-bs-toggle="collapse"
                 :data-bs-target="`#collapse-${day}`" aria-expanded="false" aria-controls="`collapse-${day}`">
-                [[hours[0].start | fullDate | upperFirst]]
+                [[hours[0].start | toDate | fullDate | upperFirst]]
               </button>
             </h2>
             <div :id="`collapse-${day}`" class="accordion-collapse collapse" :aria-labelledby="[[day]]"
@@ -58,8 +58,8 @@
                 <div class="row">
                   <div v-for="hour in hours" class="card col-4 col-md-3 col-xl-2 p-0 rounded-0 ">
                     <div class="card-header text-center">
-                      [[ hour.start | slicedDate | toString]] -
-                      [[ hour.start | slicedDate | addOneHour | toString]]
+                      [[ hour.start | toDate | toString]] -
+                      [[ hour.start | toDate | addOneHour | toString]]
                     </div>
                     <a v-if="user_in_class(hour.users)" href="#" class="text-decoration-none" @click.prevent="set_class(hour)"
                     data-bs-toggle="modal" data-bs-target="#cancelacion-reserva">
@@ -126,5 +126,5 @@
 {% endblock content %}
 
 {% block extra_js %}
-  <script src="{% static 'js/bookings/bookings.js' %}"></script>
+  <script type="module" src="{% static 'js/bookings/bookings.js' %}"></script>
 {% endblock extra_js %}

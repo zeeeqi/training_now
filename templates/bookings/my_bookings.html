@@ -3,33 +3,64 @@
 {% block title %}Mis Reservas | Training Now{% endblock title %}
 
 {% block content %}
-<div class="container mt-3">
-    
-    {% if bookings %}
-    <h1 class="h1 mb-4">Tus próximas reservas</h1>
-        
-    <ul class="list-group">
-        {% for booking in bookings %}
-        <li class="list-group-item">{{ booking.start }}</li>
-        {% endfor %}
-    </ul>
-    {% else %}
-        <div class="row">
-            <div class="col-12">
-                <h1 class="h1 mb-3 text-center">¡Vaya! Todavía no tienes ninguna reserva...</h1>
-            </div>
-            <div class="col-12 col-md-10 col-lg-6 offset-md-1 offset-lg-3 mb-2 mb-lg-4">
-                <img class="img-fluid" src="{% static 'img/mistake.jpg' %}" alt="">
-            </div>
-            <div class="col-12">
-                <p class="text-center h4">Puedes hacer tu primera reserva <a href="{% url 'bookings_app:bookings' %}">aquí</a></p>
-            </div>
+<div class="container mt-3" id="app">
+  <!-- Modal cancelación reserva-->
+  <div class="modal fade" id="cancelacion-reserva" tabindex="-1" aria-labelledby="cancelacion-reserva-label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cancelacion-reserva-label">Cancelar Reserva</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
+          [[ current_class.start | toDate |fullDate | upperFirst ]] - [[ current_class.start | toDate | toString]]H
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+            @click.prevent="delete_booking(current_class.id)">Cancelar Reserva</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Fin modal -->
+    
+  <div v-if="!loading">
+    <div v-if="have_bookings" class="row">
+      <h1 class="col-12 h1 mb-4 text-center">Mis próximas reservas</h1>
+          
+      <ul class="list-group mx-auto col-12 col-md-8 col-lg-6">
+        <li v-for="booking in bookings" class="list-group-item d-flex justify-content-between align-items-center">
+          [[booking.start | toDate | fullDate]] - [[ booking.start | toDate | toString]]H
+          <button class="btn btn-danger btn-sm" data-bs-toggle="modal" 
+          data-bs-target="#cancelacion-reserva" @click="set_class(booking)">
+          Cancelar</button>
+        </li>
+      
+      </ul>
+    </div> 
+    <div v-else class="row">
+        <div class="col-12">
+            <h1 class="h1 mb-3 text-center">¡Vaya! Todavía no tienes ninguna reserva...</h1>
+        </div>
+        <div class="col-12 col-md-10 col-lg-6 offset-md-1 offset-lg-3 mb-2 mb-lg-4">
+            <img class="img-fluid" src="{% static 'img/mistake.jpg' %}" alt="">
+        </div>
+        <div class="col-12">
+            <p class="text-center h4">Puedes hacer tu primera reserva <a href="{% url 'bookings_app:bookings' %}">aquí</a></p>
+        </div>
+    </div>
+  </div>
+  <div v-else class="d-flex justify-content-center align-items-center" style="height: 500px;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <div class="text-primary ms-3">Cargando...</div>
+  </div>
 
-    {% endif %}
 </div>
 {% endblock content %}
 
 {% block extra_js %}
-    <script src="{% static 'js/bookings/my-bookings.js' %}"></script>
+    <script type="module" src="{% static 'js/bookings/my-bookings.js' %}"></script>
 {% endblock extra_js %}

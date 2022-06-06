@@ -4,7 +4,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
+from django.contrib.auth import views as auth_views
 
 
 from django.views.generic import (
@@ -23,11 +25,11 @@ from .forms import (
     ContactForm
 )
 #
-from .models import User
+User = get_user_model()
 
 
 
-class UserRegisterView(FormView):
+class UserRegisterView(LoginRequiredMixin, FormView):
     template_name = 'users/register.html'
     form_class = UserRegisterForm
     success_url = '/'
@@ -75,10 +77,10 @@ class LoginUser(FormView):
         return super(LoginUser, self).form_valid(form)
 
 
-class LogoutView(View):
+class LogoutView(LoginRequiredMixin, View):
     def get(self, request, *args, **kargs):
         logout(request)
-        return HttpResponseRedirect(reverse('users_app:user-login'))
+        return HttpResponseRedirect(reverse('users_app:index'))
 
 
 class UpdatePasswordView(LoginRequiredMixin, FormView):
@@ -122,3 +124,4 @@ class ContactFormView(FormView):
             ['ezequielarenilla@gmail.com']
         )
         return super(ContactFormView, self).form_valid(form)
+    
