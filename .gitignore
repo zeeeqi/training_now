@@ -1,2 +1,4 @@
 secret.json
 *.pyc
+manage.py
+requirements.txt
