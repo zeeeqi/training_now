@@ -99,7 +99,7 @@ let app = new Vue({
         last_day_of_week(){
             const last_day = new Date(this.week.getTime())
             if (last_day.getDay() != 0) {
-                last_day.setDate(last_day.getDate() + (6 - last_day.getDay()))
+                last_day.setDate(last_day.getDate() + (7 - last_day.getDay()))
             }
             return last_day
         },
