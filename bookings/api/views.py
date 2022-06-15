@@ -44,7 +44,7 @@ class BookingViewSet(GenericViewSet):
     
     @action(methods=['GET'], detail=True, url_path='user-bookings')
     def get_bookings_by_user(self, request, pk):
-        qs = self.get_queryset().filter(users=pk)
+        qs = self.get_queryset().filter(users=pk, start__gte=timezone.now())
        
         
         return Response(data=self.get_serializer_class()(qs, many=True).data)
@@ -60,14 +60,14 @@ class BookingViewSet(GenericViewSet):
                     start = booking.start.replace(hour=0, minute=0, second=0)
                     end = start.replace(hour=23, minute=59, second=59)
                     
+                    if booking.start < datetime.now():
+                        return Response(data={'message': 'La clase ya ha comenzado'}, status=status.HTTP_400_BAD_REQUEST)                    
                     if booking.users.filter(id=user.id).exists():
                         return Response(data={'message': 'Ya estás en esta clase'}, status=status.HTTP_400_BAD_REQUEST)
                     if Booking.objects.filter(start__range=(start, end), users=user).exists():
                         return Response(data={'message': 'Ya tienes una reserva para hoy'}, status=status.HTTP_400_BAD_REQUEST)
                     if booking.max_people == booking.users.count():
                         return Response(data={'message': 'La clase está llena'}, status=status.HTTP_400_BAD_REQUEST)
-                    if booking.start < datetime.now():
-                        return Response(data={'message': 'La clase ya ha comenzado'}, status=status.HTTP_400_BAD_REQUEST)                    
                     if booking.allow_inscriptions:
                         booking.users.add(user)
                         return Response(data={'message': 'Clase reservada con éxito'}, status=status.HTTP_201_CREATED)
