@@ -46,8 +46,8 @@ LOCAL_APPS = (
 
 THIRD_PARTY_APPS = (
     'rest_framework',
-    'django_extensions'
-    
+    'django_extensions',
+    'captcha'
 )
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
@@ -127,3 +127,8 @@ CSRF_COOKIE_NAME = "csrftoken"
 LOGIN_URL = reverse_lazy('users_app:user-login')
 LOGOUT_URL = reverse_lazy('users_app:user-logout')
 LOGIN_REDIRECT_URL = reverse_lazy('users_app:index')
+
+#CAPTCHA KEYS
+
+RECAPTCHA_PUBLIC_KEY = get_secret('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = get_secret('RECAPTCHA_PRIVATE_KEY')
