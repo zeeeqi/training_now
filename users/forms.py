@@ -1,6 +1,8 @@
+from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV2Checkbox
+
 from django import forms
 from django.contrib.auth import authenticate
-from django.core import validators
 from django.contrib.auth.password_validation import validate_password
 #
 from .models import User
@@ -39,8 +41,6 @@ class UserRegisterForm(forms.ModelForm):
     field_order = ['email', 'password1', 'password2', 'first_name', 'last_name', 'gender']
 
     class Meta:
-        """Meta definition for Userform."""
-
         model = User
         fields = (
             'email',
@@ -83,7 +83,6 @@ class UserRegisterForm(forms.ModelForm):
         if self.cleaned_data['password1'] != self.cleaned_data['password2']:
             self.add_error('password2', 'Las contraseñas no son iguales')
          
-
 
 class LoginForm(forms.Form):
     email = forms.CharField(
@@ -217,6 +216,11 @@ class ContactForm(forms.Form):
                 'rows': '50'
             }
         )
+    )
+    
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV2Checkbox,
+        label="",
     )
     
     def clean_name(self):
