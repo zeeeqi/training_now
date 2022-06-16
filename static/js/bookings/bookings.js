@@ -108,6 +108,17 @@ let app = new Vue({
         },
         set_current_week(){
             this.week = new Date()
-        }
+        },
+        show_accordion(class_day){
+            let class_date = new Date(class_day)
+            let today = new Date()
+            let next_monday = new Date()
+            next_monday.setDate(today.getDate() + (7 - today.getDay()))
+            if (class_date.getDate() === next_monday.getDate() + 1 || class_date.getDate() === today.getDate()){
+                return true
+            }
+
+            return false
+        },
     }
 })

@@ -53,7 +53,7 @@
               </button>
             </h2>
             <div :id="`collapse-${day}`" class="accordion-collapse collapse" :aria-labelledby="[[day]]"
-              data-bs-parent="#accordion" :class="{'show': new Date(classes[0].start).getDate() === new Date().getDate() }">
+              data-bs-parent="#accordion" :class="{'show': show_accordion(classes[0].start) }">
               <div class="accordion-body">
                 <div class="row">
                   <div v-for="group in classes" class="card col-4 col-md-3 col-xl-2 p-0 rounded-0 ">
