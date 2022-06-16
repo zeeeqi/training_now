@@ -45,42 +45,32 @@
       <template v-if="have_bookings()">
         <h1 class="h2 text-center">Semana del [[first_day | mmddyyyy]] al [[ last_day | mmddyyyy]]</h1>
         <div class="accordion accordion-flush" id="accordion">
-          <div class="accordion-item" v-for="(hours, day, index) in available_bookings">
+          <div class="accordion-item" v-for="(classes, day, index) in available_bookings">
             <h2 class="accordion-header" :id="[[day]]">
               <button class="accordion-button collapsed mx-auto" type="button" data-bs-toggle="collapse"
                 :data-bs-target="`#collapse-${day}`" aria-expanded="false" aria-controls="`collapse-${day}`">
-                [[hours[0].start | toDate | fullDate | upperFirst]]
+                [[classes[0].start | toDate | fullDate | upperFirst]]
               </button>
             </h2>
             <div :id="`collapse-${day}`" class="accordion-collapse collapse" :aria-labelledby="[[day]]"
-              data-bs-parent="#accordion" :class="{'show': index === 0 }">
+              data-bs-parent="#accordion" :class="{'show': new Date(classes[0].start).getDate() === new Date().getDate() }">
               <div class="accordion-body">
                 <div class="row">
-                  <div v-for="hour in hours" class="card col-4 col-md-3 col-xl-2 p-0 rounded-0 ">
+                  <div v-for="group in classes" class="card col-4 col-md-3 col-xl-2 p-0 rounded-0 ">
                     <div class="card-header text-center">
-                      [[ hour.start | toDate | toString]] -
-                      [[ hour.start | toDate | addOneHour | toString]]
+                      [[ group.start | toDate | toString]] -
+                      [[ group.start | toDate | addOneHour | toString]]
                     </div>
-                    <a v-if="user_in_class(hour.users)" href="#" class="text-decoration-none" @click.prevent="set_class(hour)"
-                    data-bs-toggle="modal" data-bs-target="#cancelacion-reserva">
-                      <div class="card-body h-100 d-flex justify-content-center">
-                        <template v-for="user in hour.users">
-                          <i v-if="current_user.id === user.id" class="fa-solid fa-user fa-2x text-success mx-lg-1"></i>
-                          <i v-else class="fa-solid fa-user fa-2x mx-lg-1 text-danger"></i>
-                        </template>
-                        <i v-for="index in hour.max_people - hour.users.length"
-                          class="fa-solid fa-user-plus fa-2x mx-lg-1"></i>
-                      </div>
-                    </a>
-                    <a v-else href="#" class="text-decoration-none" @click.prevent="set_class(hour)" data-bs-toggle="modal"
-                      data-bs-target="#confirmacion-reserva">
-                      <div class="card-body h-100 d-flex justify-content-center">
-                        <template v-for="user in hour.users">
-                          <i v-if="current_user.id === user.id" class="fa-solid fa-user fa-2x text-success mx-lg-1"></i>
-                          <i v-else class="fa-solid fa-user fa-2x mx-lg-1 text-danger"></i>
-                        </template>
-                        <i v-for="index in hour.max_people - hour.users.length"
-                          class="fa-solid fa-user-plus fa-2x mx-lg-1"></i>
+                    <a href="#" class="text-decoration-none" @click.prevent="set_class(group)" data-bs-toggle="modal"
+                      :data-bs-target="user_in_class(group.users)?'#cancelacion-reserva':'#confirmacion-reserva'">
+                      <div class="card-body h-100">
+                        <div class="d-flex flex-wrap gap-2 justify-content-around">
+                          <i v-for="user in group.users"
+                          class="fa-solid fa-user fs-4 mx-lg-1"
+                          :class="user.id === current_user.id? 'text-success':'text-danger'"
+                          ></i>
+                          <i v-for="i in group.max_people - group.users.length" class="fa-solid fa-user fs-4 mx-lg-1 "></i>
+                        </div>
                       </div>
                     </a>
                   </div>
@@ -103,13 +93,13 @@
           <div class="col-6 d-flex justify-content-end">
             <div class="d-flex flex-column">
               <div class="d-flex">
-                <i class="fa-solid fa-user text-success mb-2 me-2"></i> <span>&nbsp; = Reserva propia</span>
+                <i class="fa-solid fa-user text-success mb-2 me-2"></i> <span> = Reserva propia</span>
               </div>
               <div class="d-flex">
-                <i class="fa-solid fa-user-plus text-primary mb-2 me-2"></i> = Reserva disponible
+                <i class="fa-solid fa-user text-primary mb-2 me-2"></i> = Reserva disponible
               </div>
               <div class="d-flex">
-                <i class="fa-solid fa-user text-danger me-2"></i>&nbsp; = Reserva ocupada
+                <i class="fa-solid fa-user text-danger me-2"></i> = Reserva ocupada
               </div>
             </div>
           </div>
